@@ -29,7 +29,7 @@ DEFAULT_USER = {
     "intercom_appid": INTERCOM_APPID,
     "email_address": None,
     "user_id": None,
-    "user_created": datetime.datetime.utcnow(),
+    "user_created": None,
     "name": None,
     "enable_inbox": INTERCOM_ENABLE_INBOX,
     "use_counter": 'false',
@@ -135,8 +135,8 @@ def intercom_tag(context):
             "INTERCOM_IS_VALID": True,
             "intercom_appid": INTERCOM_APPID,
             "user_id": request.session.session_key,
-            "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
-            "name": 'Unknown',
+            "email_address": None,
+            "name": None,
         })
 
     # Add domain
