@@ -7,6 +7,8 @@ import logging
 import hashlib
 import hmac
 import json
+
+from django.contrib.sites.shortcuts import get_current_site
 from django.template import Library
 
 from django_intercom.settings import (INTERCOM_APPID, INTERCOM_ENABLE_INBOX,
@@ -136,6 +138,11 @@ def intercom_tag(context):
             "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
             "name": 'Unknown',
         })
+
+    # Add domain
+    site = get_current_site(request)
+    USER['domain'] = site.domain
+
     # if it is here, it isn't a valid setup, return False to not show the tag.
     return USER
 

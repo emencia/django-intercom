@@ -5,6 +5,7 @@
         'app_id': APP_ID,
 
         {% if not anonymous %}
+        'domain': '{{ domain }}',
         'email': '{{ email_address }}',
         {% if user_id %}'user_id': '{{ user_id }}',{% endif %}
         'name': '{{ name }}',
