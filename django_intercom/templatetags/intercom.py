@@ -73,6 +73,9 @@ def intercom_tag(context):
     if INTERCOM_APPID is None:
         log.warning("INTERCOM_APPID isn't setup correctly in your settings")
 
+    # Do not update global variable
+    USER = DEFAULT_USER.copy()
+
     # make sure INTERCOM_APPID is setup correct and user is authenticated
     if INTERCOM_APPID and request.user and request.user.is_authenticated:
         user_data = {}
@@ -109,30 +112,32 @@ def intercom_tag(context):
                                  hmac_value.encode('utf8'),
                                  digestmod=hashlib.sha256).hexdigest()
 
-        DEFAULT_USER.update({"INTERCOM_IS_VALID": True,
-                             "intercom_appid": INTERCOM_APPID,
-                             "email_address": email,
-                             "user_id": user_id,
-                             "user_created": user_created,
-                             "name": name,
-                             "enable_inbox": INTERCOM_ENABLE_INBOX,
-                             "use_counter": use_counter,
-                             "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
-                             "custom_data": custom_data,
-                             "company_data": company_data,
-                             "user_hash": user_hash})
+        USER.update({
+            "INTERCOM_IS_VALID": True,
+            "intercom_appid": INTERCOM_APPID,
+            "email_address": email,
+            "user_id": user_id,
+            "user_created": user_created,
+            "name": name,
+            "enable_inbox": INTERCOM_ENABLE_INBOX,
+            "use_counter": use_counter,
+            "css_selector": INTERCOM_INBOX_CSS_SELECTOR,
+            "custom_data": custom_data,
+            "company_data": company_data,
+            "user_hash": user_hash,
+        })
 
     else:
         # unauthenticated
-        DEFAULT_USER.update(
-            {"INTERCOM_IS_VALID": True,
-             "intercom_appid": INTERCOM_APPID,
-             "user_id": request.session.session_key,
-             "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
-             "name": 'Unknown'}
-        )
+        USER.update({
+            "INTERCOM_IS_VALID": True,
+            "intercom_appid": INTERCOM_APPID,
+            "user_id": request.session.session_key,
+            "email_address": INTERCOM_UNAUTHENTICATED_USER_EMAIL,
+            "name": 'Unknown',
+        })
     # if it is here, it isn't a valid setup, return False to not show the tag.
-    return DEFAULT_USER
+    return USER
 
 
 def get_custom_data(user):
